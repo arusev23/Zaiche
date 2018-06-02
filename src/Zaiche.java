@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Zaiche {
@@ -7,41 +7,33 @@ public class Zaiche {
 		String[] humanInput = in.nextLine().split(", ");
 		
 		int[] field = new int[humanInput.length];
+		
 		for (int i = 0; i < field.length; i++) {
 			field[i] = Integer.parseInt(humanInput[i]);
 		}
 		
-		int startPosition = 0;
+		int position = 0, nextPosition = 1;
 		int longestRun = Integer.MIN_VALUE;
-		int currentRun = 1;
 		
-		for (int index = 0; index < field.length; index++) {
-			for (int jump = 1; jump < field.length; jump++) {
-				currentRun = 1;
-				int currentIndex = index;
+		for (int startPosition = 0; startPosition < field.length; startPosition++) {
+			for (int step = 1; step <= field.length; step++) {
+				ArrayList<Integer> used = new ArrayList<>();
+				position = startPosition;
 				
-				int nextIndex = currentIndex + jump;
-				while(nextIndex < 0) {
-					nextIndex+=field.length;
-				}
-				
-				while(field[nextIndex] > field[currentIndex] && (nextIndex != index)) {
-					currentRun++;
-					currentIndex = nextIndex;
-					nextIndex = currentIndex + jump;
-					while(nextIndex < 0) {
-						nextIndex += field.length;
-					}
-					while(nextIndex > field.length-1) {
-						nextIndex -= field.length;
+				while(!used.contains(position)) {
+					used.add(position);
+					nextPosition = (position + step) % field.length;
+					if(field[nextPosition] <= field[position]) {
+						break;
 					}
 					
+					position = nextPosition;
 				}
-				longestRun = Math.max(longestRun, currentRun);
+				
+				longestRun = Math.max(longestRun, used.size()); // used.size() == successful jumps
 			}
-			
 		}
-		longestRun = Math.max(longestRun, currentRun);
 		System.out.println(longestRun);
 	}
+	
 }
